@@ -43,8 +43,8 @@ export default function TapsProjects() {
     <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
        {paginatedImages.map((img , index)=> <div key={index} className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'>
             <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
-        <div className='flex flex-col items-center justify-center absolute top-[125%] left-0 right-[125%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/60 duration-300 '>
-            <h3 className='text-3xl text-yellow-500 font-bold mb-4'>{img.title}</h3>
+        <div className='flex flex-col items-center justify-center absolute top-0 right-0 sm:top-[150%] left-0 sm:right-[150%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/10 sm:bg-black/60 duration-300 '>
+            <h3 className='text-xl sm:text-3xl text-yellow-500 font-bold mb-4 hidden sm:block'>{img.title}</h3>
             <div className='flex items-center gap-5'>
                 <a href={img.link} target='_blank'>
                     <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
@@ -52,7 +52,8 @@ export default function TapsProjects() {
                 <button 
                     onClick={()=>{
                     setModalImage(img.image) ;
-                    document.getElementById('my_modal_3').showModal();}}>
+                    document.getElementById('my_modal_3').showModal();}} className='hidden sm:block'>
+                        
                      <FaSearchPlus  className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
                 </button> 
             </div>

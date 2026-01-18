@@ -24,22 +24,22 @@ const cardInfo = [
 ]
   return (
     <>
-      <section className='bg-[#10121B] text-white w-full min-h-screen dark:bg-gray-100 dark:text-gray-900 pb-15'>
+      <section className='bg-[#10121B] px-1 md:px-0 text-white w-full min-h-screen dark:bg-gray-100 dark:text-gray-900 pb-15'>
         <div className="container mx-auto p-4">
             <HeaderSection title={'about me'}/>
             {/* information */}
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-5 '>
-            <div className='relative  h-100 overflow-hidden group mb-4
+            <div className='relative  h-100 overflow-hidden group mb-4 
             before:content-[""] before:absolute before:w-5 before:h-70 before:bg-blue-600/60
-            after:content-[""] after:absolute after:right-0 after:bottom-0 after:w-5 after:h-70 after:bg-blue-600/60'>
-              <img src={img} alt="Me" className='w-full object-cover '/>
+            after:content-[""] after:absolute after:right-0 after:bottom-20 sm:after:bottom-0 after:w-5 after:h-70 after:bg-blue-600/60'>
+              <img src={img} alt="Me" className='w-full object-cover'/>
               <ModalAbout/>
             </div>
             <div>
               <h2 className='md:text-4xl text-3xl font-semibold -translate-y-5'>I am <span className='text-blue-500'>Mohamed Elshora</span></h2>
               <p className='md:text-xl text-lg text-gray-400 dark:text-gray-700 leading-relaxed mb-5'>I am a frontend web developer. I can provide clean code and pixel perfect design. I also make website more & more interactive with web animations.</p>
               <ul className='space-y-2'>
-                {personalInfo.map((info , index)=> <li key={index} className='flex text-xl text-gray-400 dark:text-gray-900 '>
+                {personalInfo.map((info , index)=> <li key={index} className='flex text-lg md:text-xl text-gray-400 dark:text-gray-900 '>
                   <span className='font-semibold w-30'>{info.label}</span> <span className='pr-2'>:</span> <span>{info.value}</span>
                 </li>)}
               </ul>

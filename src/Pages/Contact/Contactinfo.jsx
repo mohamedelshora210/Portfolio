@@ -18,12 +18,12 @@ export default function Contactinfo() {
             </div>
 
             
-            <div className=' flex gap-5 items-center p-5 py-7 group bg-gray-800/20 rounded-xl'>
+            <div className=' flex gap-5 items-center p-5 py-7 group bg-gray-800/20 rounded-xl '>
             <div className="tooltip" data-tip="gmail">
             <IoIosMail className='text-5xl group-hover:scale-115 group-hover:rotate-[5deg] duration-150 border-2 p-2 rounded-full border-blue-600' />
             </div>
-                <span className='flex flex-col text-xl space-y-2 font-semibold'>
-                    <a href={`mailto:mohamedelshora210@gmail.com?subject=${encodeURIComponent("Hello!")} &body=${encodeURIComponent("I want to contact you.")}`} target='_blank' className='hover:text-blue-600 duration-150'> mohamedelshora210@gmail.com</a>
+                <span className='flex flex-col text-xl space-y-2 font-semibold '>
+                    <a href={`mailto:mohamedelshora210@gmail.com?subject=${encodeURIComponent("Hello!")} &body=${encodeURIComponent("I want to contact you.")}`} target='_blank' className='hover:text-blue-600 duration-150'> mohamedelshora210</a>
                 </span>
             </div>
 

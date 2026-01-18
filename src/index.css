@@ -44,11 +44,7 @@ body {
 }
 
 .animate-bg {
-  animation: bgMove 20s linear infinite alternate;
-}
-
-.animate-logo {
-  animation: logo 10s linear infinite ;
+  animation: bgMove 15s linear infinite alternate;
 }
 
 @keyframes bgMove {
@@ -56,16 +52,7 @@ body {
     transform: scale(1) translateX(0);
   }
   to {
-    transform: scale(1.3) translateX(-40px);
-  }
-} 
-@keyframes logo {
-  from {
-    transform: rotate(0);
-  }
-  to 
-  {
-    transform:rotate(360deg);
+    transform: scale(1.5) translateX(-40px);
   }
 } 
 

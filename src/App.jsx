@@ -1,5 +1,6 @@
 
 import './App.css'
+import 'animate.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Layout from './LayOut/Layout.jsx'
 import HomePage from './Pages/HomePage/HomePage';

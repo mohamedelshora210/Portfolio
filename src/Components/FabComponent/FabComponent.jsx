@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaGithub, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
 import { IoIosMail } from 'react-icons/io'
 
@@ -13,7 +13,7 @@ export default function FabComponent() {
     <>
     <div className="fab fab-flower me-2">
   {/* a focusable div with tabIndex is necessary to work on all browsers. role="button" is necessary for accessibility */}
-  <div tabIndex={0} role="button" className="btn btn-circle btn-lg dark:bg-gray-600 dark:border-gray-600">
+  <div tabIndex={0} role="button" className="  btn btn-circle btn-lg dark:bg-gray-600 dark:border-gray-600">
     <svg
       aria-label="New"
       xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +28,8 @@ export default function FabComponent() {
   </div>
 
   {/* Main Action button replaces the original button when FAB is open */}
-  <button className="fab-main-action btn btn-circle btn-lg bg-blue-500 border-blue-500 text-white">
+  <div className='fab-close'>
+  <button  className="  btn btn-circle btn-lg bg-blue-500 border-blue-500 text-white">
     <svg
       aria-label="New post"
       xmlns="http://www.w3.org/2000/svg"
@@ -43,6 +44,7 @@ export default function FabComponent() {
       />
     </svg>
   </button>
+  </div>
 
   {/* buttons that show up when FAB is open */}
   

@@ -6,7 +6,7 @@ import Contactinfo from './Contactinfo'
 export default function Contact() {
   return (
     <>
-      <section className='bg-[#10121B] text-white w-full min-h-screen dark:bg-gray-100 dark:text-gray-900 pb-15'>
+      <section className='bg-[#10121B] text-white w-full min-h-screen dark:bg-gray-100 dark:text-gray-900 pb-15 px-1 md:px-0'>
         <div className="container mx-auto p-4">
           <HeaderSection title={'Contact Me'}/>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
