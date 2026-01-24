@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import * as zod from 'zod'
@@ -10,13 +10,14 @@ import emailjs from "emailjs-com";
 
 export default function ContactForm() {
 
+const [isLoading, setIsLoading] = useState(false)
+
 const schema = zod.object({
   name : zod.string().nonempty('Name is required').min(3 , 'your name at least 3 char'),
   email:zod.email('Enter valid email').regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ , 'Enter valid email'),
   subject:zod.string().nonempty('Subject is required'),
   message:zod.string()
 })
- 
 
   const {handleSubmit , register , formState:{errors , touchedFields}} = useForm({
     defaultValues : {
@@ -34,6 +35,7 @@ const schema = zod.object({
   
 
   function onSubmit(data){
+    setIsLoading(true)
     emailjs.send(
         'service_nglzj8r',
         'template_p3jn24p',
@@ -44,7 +46,9 @@ const schema = zod.object({
           message : data.message
         },
         'tIvMRm5ynEfJjmNgy'
-    ).then(()=>toast.success('Email sent successfully')).catch(()=>toast.error('Failed to send email'))
+    ).then(()=>toast.success('Email sent successfully'))
+    .catch(()=>toast.error('Failed to send email'))
+    .finally(()=>setIsLoading(false))
     
   }
   return (
@@ -81,7 +85,7 @@ const schema = zod.object({
         <span className='bg-[#10121B]  dark:bg-gray-100 dark:text-gray-900 text-xl font-semibold'>Enter Your Message </span>
         <textarea {...register('message')} className="textarea block bg-transparent w-full  border-blue-500/30 focus:border-blue-600 resize-none outline-0 dark:placeholder:text-gray-600" rows={5} placeholder="Message"></textarea>
       </label>
-      <button className='border border-blue-600 px-4 py-3 rounded-xl cursor-pointer font-bold hover:bg-blue-600 duration-300 dark:hover:text-white' type='submit'>Send Mail</button>
+      <button className={`border border-blue-600 px-4 py-3 rounded-xl cursor-pointer font-bold hover:bg-blue-600 duration-300 dark:hover:text-white ${isLoading &&'bg-blue-600 dark:text-white'}`} disabled={isLoading} type='submit'> {isLoading && <span className="loading loading-dots loading-md"></span>} Send Mail</button>
      
      
       </form>
