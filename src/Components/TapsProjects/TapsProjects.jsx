@@ -24,6 +24,11 @@ export default function TapsProjects() {
     const [page, setPage] = useState(1)
     const perPage = 4
 
+    const handleTabChange = (tabName) => {
+        setActiveTab(tabName)
+        setPage(1)
+    }
+
     const images = [
         {tec:'next' , image : img12 , link:'https://sooqui.almasader.org/ar' , title : 'Sooq-Load'},
         {tec:'next' , image : img13 , link:'https://feedeals.com/en' , title : 'FeeDeal'},
@@ -45,21 +50,52 @@ export default function TapsProjects() {
     const paginatedImages = images.slice((page - 1) * perPage , page * perPage )
     const totalPages = Math.ceil(images.length / perPage)
 
-    // Animation configuration variants
+    // Container animation variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.08,
+            }
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                staggerChildren: 0.05,
+                staggerDirection: -1,
+                when: "afterChildren"
+            }
+        }
+    }
+
+    // Card animation variants
     const cardVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-        exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
+        hidden: { opacity: 0, y: 20, scale: 0.95 },
+        visible: { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1,
+            transition: { 
+                type: "spring",
+                stiffness: 120,
+                damping: 15
+            } 
+        },
+        exit: { 
+            opacity: 0, 
+            y: -20, 
+            scale: 0.95,
+            transition: { 
+                duration: 0.2 
+            } 
+        }
     }
 
     // Helper reusable card component to avoid repetitive markup
     const ProjectCard = ({ img }) => (
         <motion.div 
-            layout // Smoothly animates position changes when other elements disappear
             variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
             className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'
         >
             <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
@@ -93,27 +129,38 @@ export default function TapsProjects() {
                 className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
                 aria-label="All Projects" 
                 defaultChecked
-                onChange={() => setActiveTab('all')}
+                onChange={() => handleTabChange('all')}
             />
             <div className="tab-content p-10">
-                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-                    <AnimatePresence mode='popLayout'>
-                        {paginatedImages.map((img, index) => (
-                            <ProjectCard key={`all-${img.title}-${index}`} img={img} />
-                        ))}
+                {activeTab === 'all' && (
+                    <>
+                    <AnimatePresence mode='wait'>
+                        <motion.div 
+                            key={page}
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'
+                        >
+                            {paginatedImages.map((img) => (
+                                <ProjectCard key={img.title} img={img} />
+                            ))}
+                        </motion.div>
                     </AnimatePresence>
-                </motion.div>
 
-                <div className="join block text-center">
-                    {Array.from({length : totalPages} , (_,i)=> (
-                        <button onClick={()=>setPage( i + 1)} key={i} 
-                            className={`px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-700
-                                ${page === i + 1 ? 'bg-blue-500 text-white' : ' text-gray-700'}
-                                hover:bg-blue-600 hover:text-white duration-150 cursor-pointer me-2`}>
-                            {i + 1}
-                        </button>
-                    ))}
-                </div>
+                    <div className="join block text-center">
+                        {Array.from({length : totalPages} , (_,i)=> (
+                            <button onClick={()=>setPage( i + 1)} key={i} 
+                                className={`px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-700
+                                    ${page === i + 1 ? 'bg-blue-500 text-white' : ' text-gray-700'}
+                                    hover:bg-blue-600 hover:text-white duration-150 cursor-pointer me-2`}>
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
+                    </>
+                )}
             </div>
 
             {/* TAB 2: NEXT JS */}
@@ -122,16 +169,21 @@ export default function TapsProjects() {
                 name="my_tabs_2" 
                 className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
                 aria-label="Next"  
-                onChange={() => setActiveTab('next')}
+                onChange={() => handleTabChange('next')}
             />
             <div className="tab-content p-10">
-                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-                    <AnimatePresence mode='popLayout'>
-                        {images.filter((image)=>image.tec==='next').map((img, index) => (
-                            <ProjectCard key={`next-${img.title}-${index}`} img={img} />
+                {activeTab === 'next' && (
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'
+                    >
+                        {images.filter((image)=>image.tec==='next').map((img) => (
+                            <ProjectCard key={img.title} img={img} />
                         ))}
-                    </AnimatePresence>
-                </motion.div>
+                    </motion.div>
+                )}
             </div>
 
             {/* TAB 3: REACT */}
@@ -140,16 +192,21 @@ export default function TapsProjects() {
                 name="my_tabs_2" 
                 className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
                 aria-label="React"  
-                onChange={() => setActiveTab('react')}
+                onChange={() => handleTabChange('react')}
             />
             <div className="tab-content p-10">
-                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-                    <AnimatePresence mode='popLayout'>
-                        {images.filter((image)=>image.tec==='react').map((img, index) => (
-                            <ProjectCard key={`react-${img.title}-${index}`} img={img} />
+                {activeTab === 'react' && (
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'
+                    >
+                        {images.filter((image)=>image.tec==='react').map((img) => (
+                            <ProjectCard key={img.title} img={img} />
                         ))}
-                    </AnimatePresence>
-                </motion.div>
+                    </motion.div>
+                )}
             </div>
 
             {/* TAB 4: JAVASCRIPT */}
@@ -158,16 +215,21 @@ export default function TapsProjects() {
                 name="my_tabs_2" 
                 className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
                 aria-label="Java Script" 
-                onChange={() => setActiveTab('js')}
+                onChange={() => handleTabChange('js')}
             />
             <div className="tab-content p-10">
-                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-                    <AnimatePresence mode='popLayout'>
-                        {images.filter((image)=>image.tec==='js').map((img, index) => (
-                            <ProjectCard key={`js-${img.title}-${index}`} img={img} />
+                {activeTab === 'js' && (
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'
+                    >
+                        {images.filter((image)=>image.tec==='js').map((img) => (
+                            <ProjectCard key={img.title} img={img} />
                         ))}
-                    </AnimatePresence>
-                </motion.div>
+                    </motion.div>
+                )}
             </div>
 
             {/* TAB 5: BOOTSTRAP */}
@@ -176,16 +238,21 @@ export default function TapsProjects() {
                 name="my_tabs_2" 
                 className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
                 aria-label="Bootstrap" 
-                onChange={() => setActiveTab('bs')}
+                onChange={() => handleTabChange('bs')}
             />
             <div className="tab-content p-10">
-                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-                    <AnimatePresence mode='popLayout'>
-                        {images.filter((image)=>image.tec==='bs').map((img, index) => (
-                            <ProjectCard key={`bs-${img.title}-${index}`} img={img} />
+                {activeTab === 'bs' && (
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'
+                    >
+                        {images.filter((image)=>image.tec==='bs').map((img) => (
+                            <ProjectCard key={img.title} img={img} />
                         ))}
-                    </AnimatePresence>
-                </motion.div>
+                    </motion.div>
+                )}
             </div>
         </div>
 
