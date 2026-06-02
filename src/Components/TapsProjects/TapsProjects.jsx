@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion' // Added for animations
 import img1 from '../../assets/e-commerce.png'
 import img2 from '../../assets/social-app.png'
 import img3 from '../../assets/activities.png'
@@ -10,12 +11,24 @@ import img8 from '../../assets/quets.png'
 import img9 from '../../assets/smartLogin.png'
 import img10 from '../../assets/start-react.png'
 import img11 from '../../assets/weather.png'
+import img12 from '../../assets/load.png'
+import img13 from '../../assets/deal.png'
+import img14 from '../../assets/sooq.png'
+import img15 from '../../assets/well.png'
 import { FaLink, FaSearchPlus } from 'react-icons/fa'
 import ModalProjectsImage from '../ModalProjectsImage/ModalProjectsImage'
+
 export default function TapsProjects() {
     const [modalImage, setModalImage] = useState(null)
+    const [activeTab, setActiveTab] = useState('all') // Track active tab to reset pagination if needed
+    const [page, setPage] = useState(1)
+    const perPage = 4
 
     const images = [
+        {tec:'next' , image : img12 , link:'https://sooqui.almasader.org/ar' , title : 'Sooq-Load'},
+        {tec:'next' , image : img13 , link:'https://feedeals.com/en' , title : 'FeeDeal'},
+        {tec:'next' , image : img14 , link:'https://site.sooqalnas.sy/ar' , title : 'Sooq-AlNas'},
+        {tec:'next' , image : img15 , link:'https://well7ui.almasader.org/ar' , title : 'Well 7'},
         {tec:'react' , image : img1 , link:'https://e-commerce-iota-opal-39.vercel.app/' , title : 'E-commerce'},
         {tec:'react' , image : img2 , link:'https://social-app-lime-eight.vercel.app/' , title : 'Social App'},
         {tec:'react' , image : img10 , link:'https://first-react-project-kappa-jet.vercel.app/' , title : 'First Project React'},
@@ -29,124 +42,154 @@ export default function TapsProjects() {
         {tec:'bs' , image : img3 , link:'https://mohamedelshora210.github.io/activites/' , title : 'Students Activities'},
     ]
      
-    const perPage= 4;
-    const [page, setPage] = useState(1)
-
     const paginatedImages = images.slice((page - 1) * perPage , page * perPage )
     const totalPages = Math.ceil(images.length / perPage)
 
-  return (
-    <>
-    <div className="tabs tabs-border  space-y-4 ">
-  <input type="radio" name="my_tabs_2" className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800  dark:checked:text-gray-800 " aria-label="All Projects" defaultChecked/>
-  <div className="tab-content  p-10">
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-       {paginatedImages.map((img , index)=> <div key={index} className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'>
+    // Animation configuration variants
+    const cardVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+        exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
+    }
+
+    // Helper reusable card component to avoid repetitive markup
+    const ProjectCard = ({ img }) => (
+        <motion.div 
+            layout // Smoothly animates position changes when other elements disappear
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'
+        >
             <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
-        <div className='flex flex-col items-center justify-center absolute top-0 right-0 sm:top-[150%] left-0 sm:right-[150%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/10 sm:bg-black/60 duration-300 '>
-            <h3 className='text-xl sm:text-3xl text-yellow-500 font-bold mb-4 hidden sm:block'>{img.title}</h3>
-            <div className='flex items-center gap-5'>
-                <a href={img.link} target='_blank'>
-                    <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
-                 </a>
-                <button 
-                    onClick={()=>{
-                    setModalImage(img.image) ;
-                    document.getElementById('my_modal_3').showModal();}} className='hidden sm:block'>
-                        
-                     <FaSearchPlus  className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
-                </button> 
+            <div className='flex flex-col items-center justify-center absolute top-0 right-0 sm:top-[150%] left-0 sm:right-[150%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/10 sm:bg-black/60 duration-300 '>
+                <h3 className='text-xl sm:text-3xl text-yellow-500 font-bold mb-4 hidden sm:block'>{img.title}</h3>
+                <div className='flex items-center gap-5'>
+                    <a href={img.link} target='_blank' rel="noreferrer">
+                        <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
+                    </a>
+                    <button 
+                        onClick={()=>{
+                            setModalImage(img.image);
+                            document.getElementById('my_modal_3').showModal();
+                        }} 
+                        className='hidden sm:block'
+                    >
+                        <FaSearchPlus className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
+                    </button> 
+                </div>
+            </div>
+        </motion.div>
+    )
+
+    return (
+        <>
+        <div className="tabs tabs-border space-y-4">
+            {/* TAB 1: ALL PROJECTS */}
+            <input 
+                type="radio" 
+                name="my_tabs_2" 
+                className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
+                aria-label="All Projects" 
+                defaultChecked
+                onChange={() => setActiveTab('all')}
+            />
+            <div className="tab-content p-10">
+                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
+                    <AnimatePresence mode='popLayout'>
+                        {paginatedImages.map((img, index) => (
+                            <ProjectCard key={`all-${img.title}-${index}`} img={img} />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
+
+                <div className="join block text-center">
+                    {Array.from({length : totalPages} , (_,i)=> (
+                        <button onClick={()=>setPage( i + 1)} key={i} 
+                            className={`px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-700
+                                ${page === i + 1 ? 'bg-blue-500 text-white' : ' text-gray-700'}
+                                hover:bg-blue-600 hover:text-white duration-150 cursor-pointer me-2`}>
+                            {i + 1}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* TAB 2: NEXT JS */}
+            <input 
+                type="radio" 
+                name="my_tabs_2" 
+                className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
+                aria-label="Next"  
+                onChange={() => setActiveTab('next')}
+            />
+            <div className="tab-content p-10">
+                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
+                    <AnimatePresence mode='popLayout'>
+                        {images.filter((image)=>image.tec==='next').map((img, index) => (
+                            <ProjectCard key={`next-${img.title}-${index}`} img={img} />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
+            </div>
+
+            {/* TAB 3: REACT */}
+            <input 
+                type="radio" 
+                name="my_tabs_2" 
+                className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
+                aria-label="React"  
+                onChange={() => setActiveTab('react')}
+            />
+            <div className="tab-content p-10">
+                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
+                    <AnimatePresence mode='popLayout'>
+                        {images.filter((image)=>image.tec==='react').map((img, index) => (
+                            <ProjectCard key={`react-${img.title}-${index}`} img={img} />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
+            </div>
+
+            {/* TAB 4: JAVASCRIPT */}
+            <input 
+                type="radio" 
+                name="my_tabs_2" 
+                className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
+                aria-label="Java Script" 
+                onChange={() => setActiveTab('js')}
+            />
+            <div className="tab-content p-10">
+                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
+                    <AnimatePresence mode='popLayout'>
+                        {images.filter((image)=>image.tec==='js').map((img, index) => (
+                            <ProjectCard key={`js-${img.title}-${index}`} img={img} />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
+            </div>
+
+            {/* TAB 5: BOOTSTRAP */}
+            <input 
+                type="radio" 
+                name="my_tabs_2" 
+                className="tab hover:text-white font-semibold text-gray-500 checked:text-white dark:hover:text-gray-800 dark:checked:text-gray-800" 
+                aria-label="Bootstrap" 
+                onChange={() => setActiveTab('bs')}
+            />
+            <div className="tab-content p-10">
+                <motion.div layout className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
+                    <AnimatePresence mode='popLayout'>
+                        {images.filter((image)=>image.tec==='bs').map((img, index) => (
+                            <ProjectCard key={`bs-${img.title}-${index}`} img={img} />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
             </div>
         </div>
-        </div>)}
-    </div>
 
-    <div className="join block text-center">
-        {Array.from({length : totalPages} , (_,i)=> (
-                <button onClick={()=>setPage( i + 1)} key={i} 
-                className={`px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-700
-                    ${page === i + 1 ? 'bg-blue-500 text-white' : ' text-gray-700'}
-                    hover:bg-blue-600 hover:text-white duration-150 cursor-pointer me-2`}>
-                    {i + 1}
-                </button>
-        ))}
-    </div>
-
-  </div>
-
-  <input type="radio" name="my_tabs_2" className="tab hover:text-white font-semibold text-gray-500 checked:text-white  dark:hover:text-gray-800  dark:checked:text-gray-800" aria-label="React"  />
-  <div className="tab-content  p-10">
-
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-       { images.filter((image)=>image.tec=='react').map((img , index)=> <div key={index} className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'>
-            <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
-        <div className='flex flex-col items-center justify-center absolute top-[125%] left-0 right-[125%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/60 duration-300 '>
-            <h3 className='text-3xl text-yellow-500 font-bold mb-4'>{img.title}</h3>
-            <div className='flex items-center gap-5'>
-                <a href={img.link} target='_blank'>
-                    <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
-                 </a>
-                <button 
-                    onClick={()=>{
-                    setModalImage(img.image) ;
-                    document.getElementById('my_modal_3').showModal();}}>
-                     <FaSearchPlus  className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
-                </button> 
-            </div>
-        </div>
-        </div>)}
-    </div>
-  </div>
-
-  <input type="radio" name="my_tabs_2" className="tab hover:text-white font-semibold text-gray-500 checked:text-white  dark:hover:text-gray-800  dark:checked:text-gray-800" aria-label="Java Script" />
-  <div className="tab-content p-10">
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-       { images.filter((image)=>image.tec=='js').map((img , index)=> <div key={index} className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'>
-            <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
-        <div className='flex flex-col items-center justify-center absolute top-[125%] left-0 right-[125%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/60 duration-300 '>
-            <h3 className='text-3xl text-yellow-500 font-bold mb-4'>{img.title}</h3>
-            <div className='flex items-center gap-5'>
-                <a href={img.link} target='_blank'>
-                    <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
-                 </a>
-                <button 
-                    onClick={()=>{
-                    setModalImage(img.image) ;
-                    document.getElementById('my_modal_3').showModal();}}>
-                     <FaSearchPlus  className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
-                </button> 
-            </div>
-        </div>
-        </div>)}
-    </div>
-  </div>
-
-  <input type="radio" name="my_tabs_2" className="tab hover:text-white font-semibold text-gray-500 checked:text-white  dark:hover:text-gray-800  dark:checked:text-gray-800" aria-label="Bootstrap" />
-  <div className="tab-content p-10">
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'>
-       { images.filter((image)=>image.tec=='bs').map((img , index)=> <div key={index} className='relative p-1 border-3 rounded-2xl border-gray-400 dark:border-gray-800 overflow-hidden group hover:border-blue-600 hover:shadow hover:shadow-blue-500 duration-150'>
-            <img src={img.image} alt={img.tec} className='rounded-2xl group-hover:scale-105 hover:rotate-[0.3deg] duration-300 ' />
-        <div className='flex flex-col items-center justify-center absolute top-[125%] left-0 right-[125%] bottom-0 group-hover:top-0 group-hover:right-0 bg-black/60 duration-300 '>
-            <h3 className='text-3xl text-yellow-500 font-bold mb-4'>{img.title}</h3>
-            <div className='flex items-center gap-5'>
-                <a href={img.link} target='_blank'>
-                    <FaLink className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300' />          
-                 </a>
-                <button 
-                    onClick={()=>{
-                    setModalImage(img.image) ;
-                    document.getElementById('my_modal_3').showModal();}}>
-                     <FaSearchPlus  className='text-3xl text-blue-400 cursor-pointer hover:text-blue-500 hover:scale-115 duration-300'/>
-                </button> 
-            </div>
-        </div>
-        </div>)}
-    </div>
-  </div>
-
-</div>
-
-<ModalProjectsImage img={modalImage}/>
-    </>
-  )
+        <ModalProjectsImage img={modalImage}/>
+        </>
+    )
 }
